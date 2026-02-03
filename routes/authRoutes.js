@@ -36,7 +36,7 @@ const sendVerificationEmail = async (otp, email, username) => {
       <p>Please enter this code in the app to verify your email address.</p>
       <p>If you did not request this, please ignore this email.</p>
       <br/>
-      <p>Best regards,<br/>Eastate flow Team</p>`;
+      <p>Best regards,<br/>Estate flow Team</p>`;
 
     await transporter.sendMail({
       from: verifyemail,
