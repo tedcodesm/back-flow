@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 
 import Order from "../models/order.js";
 import Property from "../models/Property.js";
-import { getAccessToken } from "../lib/pesapal.js";
 import { protect } from "../middleware/authMiddleware.js";
+import getAccessToken from "../lib/pesapal.js";
 
 dotenv.config();
 

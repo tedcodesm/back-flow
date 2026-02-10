@@ -75,4 +75,118 @@ router.post("/",protect, upload.array("images", 10), async (req, res) => {
   }
 });
 
+// get property by id
+router.get("/:id", async (req, res) => {
+  try { 
+    const property = await Property.findById(req.params.id).populate(
+      "landlord",
+      "name email"
+    );
+
+    if (!property) {
+      return res.status(404).json({
+        message: "Property not found",
+      });
+    }
+    
+
+    res.json(property);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching property",
+      error: error.message,
+    });
+  }
+});
+
+// get all properties
+router.get("/", async (req, res) => {
+  try {
+    const properties = await Property.find().populate(
+      "landlord",
+      "name email"
+    );
+    res.json(properties);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching properties",
+      error: error.message,
+    });
+  }
+});
+
+// update property
+router.put("/:id", protect, upload.array("images", 10), async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) {
+      return res.status(404).json({
+        message: "Property not found",
+      });
+    }
+    if (property.landlord.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        message: "Unauthorized",
+      });
+    }
+    const {
+      title,
+      description,
+      price,
+      address,
+      size,
+      amenities,
+      propertytype,
+      coordinates,
+    } = req.body;
+    
+    const updatedProperty = await Property.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+        description,
+        price,
+        address,
+        size,
+        amenities: amenities || [],
+        propertytype,
+        coordinates: JSON.parse(coordinates),
+      },
+      { new: true }
+    );
+
+    res.json(updatedProperty);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating property",
+      error: error.message,
+    });
+  }
+});
+
+router.delete("/:id", protect, async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) {
+      return res.status(404).json({
+        message: "Property not found",
+      });
+    }
+    if (property.landlord.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        message: "Unauthorized",
+      });
+    }
+    await property.remove();
+    res.json({
+      message: "Property deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting property",
+      error: error.message,
+    });
+  }
+});
+
 export default router;
