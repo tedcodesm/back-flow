@@ -4,6 +4,7 @@ import connectDB from "./lib/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import propertyRoutes from "./routes/propertyRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/property", propertyRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/messages", messageRoutes);
 connectDB();
 
 app.listen(port, () => {

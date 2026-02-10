@@ -6,7 +6,7 @@ import upload from "../middleware/multer.js";
 
 const router = express.Router();
 
-router.post("/",protect, upload.array("images", 10), async (req, res) => {
+router.post("/", protect, upload.array("images", 10), async (req, res) => {
   try {
     const {
       title,
@@ -77,10 +77,10 @@ router.post("/",protect, upload.array("images", 10), async (req, res) => {
 
 // get property by id
 router.get("/:id", async (req, res) => {
-  try { 
+  try {
     const property = await Property.findById(req.params.id).populate(
       "landlord",
-      "name email"
+      "name email",
     );
 
     if (!property) {
@@ -88,7 +88,6 @@ router.get("/:id", async (req, res) => {
         message: "Property not found",
       });
     }
-    
 
     res.json(property);
   } catch (error) {
@@ -102,10 +101,7 @@ router.get("/:id", async (req, res) => {
 // get all properties
 router.get("/", async (req, res) => {
   try {
-    const properties = await Property.find().populate(
-      "landlord",
-      "name email"
-    );
+    const properties = await Property.find().populate("landlord", "name email");
     res.json(properties);
   } catch (error) {
     res.status(500).json({
@@ -139,7 +135,7 @@ router.put("/:id", protect, upload.array("images", 10), async (req, res) => {
       propertytype,
       coordinates,
     } = req.body;
-    
+
     const updatedProperty = await Property.findByIdAndUpdate(
       req.params.id,
       {
@@ -152,7 +148,7 @@ router.put("/:id", protect, upload.array("images", 10), async (req, res) => {
         propertytype,
         coordinates: JSON.parse(coordinates),
       },
-      { new: true }
+      { new: true },
     );
 
     res.json(updatedProperty);
