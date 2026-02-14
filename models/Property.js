@@ -31,7 +31,14 @@ const propertySchema = new mongoose.Schema(
     },
     propertytype: {
       type: String,
+      enum: ["Rent", "Sale"],
+
+      required: true,
+    },
+    category: {
+      type: String,
       enum: ["Apartment", "House", "Studio"],
+
       required: true,
     },
     size: {

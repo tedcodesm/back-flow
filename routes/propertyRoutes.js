@@ -16,6 +16,7 @@ router.post("/", protect, upload.array("images", 10), async (req, res) => {
       size,
       amenities,
       propertytype,
+      category,
       coordinates,
     } = req.body;
 
@@ -26,6 +27,7 @@ router.post("/", protect, upload.array("images", 10), async (req, res) => {
       !address ||
       !size ||
       !coordinates ||
+      !category ||
       !propertytype
     ) {
       return res.status(400).json({
@@ -56,6 +58,7 @@ router.post("/", protect, upload.array("images", 10), async (req, res) => {
       amenities: amenities || [],
       coordinates: JSON.parse(coordinates),
       propertytype,
+      category,
       landlord: req.user._id,
       available: true,
       images: imageUrls,
@@ -101,7 +104,7 @@ router.get("/:id", async (req, res) => {
 // get all properties
 router.get("/", async (req, res) => {
   try {
-    const properties = await Property.find().populate("landlord", "name email");
+    const properties = await Property.find().populate("landlord", "name email").sort({ createdAt: -1 });
     res.json(properties);
   } catch (error) {
     res.status(500).json({
@@ -133,6 +136,7 @@ router.put("/:id", protect, upload.array("images", 10), async (req, res) => {
       size,
       amenities,
       propertytype,
+      category,
       coordinates,
     } = req.body;
 
@@ -146,6 +150,7 @@ router.put("/:id", protect, upload.array("images", 10), async (req, res) => {
         size,
         amenities: amenities || [],
         propertytype,
+        category,
         coordinates: JSON.parse(coordinates),
       },
       { new: true },
