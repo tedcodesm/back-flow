@@ -104,7 +104,7 @@ router.get("/:id", async (req, res) => {
 // get all properties
 router.get("/", async (req, res) => {
   try {
-    const properties = await Property.find().populate("landlord", "name email").sort({ createdAt: -1 });
+    const properties = await Property.find().populate("landlord", "username phone email").sort({ createdAt: -1 });
     res.json(properties);
   } catch (error) {
     res.status(500).json({
