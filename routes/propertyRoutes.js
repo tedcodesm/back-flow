@@ -83,7 +83,7 @@ router.get("/:id", async (req, res) => {
   try {
     const property = await Property.findById(req.params.id).populate(
       "landlord",
-      "name email",
+      "username email phone",
     );
 
     if (!property) {
