@@ -78,6 +78,38 @@ router.post("/", protect, upload.array("images", 10), async (req, res) => {
   }
 });
 
+
+router.get("/nearby", async (req, res) => {
+  try {
+    const { latitude, longitude } = req.query;
+
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+
+    const radius = 0.05;
+
+    const properties = await Property.find({
+      "coordinates.lat": {
+        $gte: lat - radius,
+        $lte: lat + radius,
+      },
+      "coordinates.lng": {
+        $gte: lng - radius,
+        $lte: lng + radius,
+      },
+    }).populate("landlord", "username email phone");
+
+    res.json(properties);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Error fetching nearby properties",
+    });
+  }
+});
+
+
 // get property by id
 router.get("/:id", async (req, res) => {
   try {
@@ -100,6 +132,11 @@ router.get("/:id", async (req, res) => {
     });
   }
 });
+
+
+
+
+
 
 // get all properties
 router.get("/", async (req, res) => {
