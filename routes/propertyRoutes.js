@@ -150,6 +150,25 @@ router.get("/", async (req, res) => {
     });
   }
 });
+// GET all properties of logged-in landlord
+router.get("/landlord/myproperty", protect, async (req, res) => {
+  try {
+    const properties = await Property.find({
+      landlord: req.user._id, 
+    })
+      .populate("landlord", "username email phone")
+      .sort({ createdAt: -1 });
+
+    res.json(properties);
+    console.log(properties);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching landlord properties",
+      error: error.message,
+    });
+  }
+});
+
 
 // update property
 router.put("/:id", protect, upload.array("images", 10), async (req, res) => {
