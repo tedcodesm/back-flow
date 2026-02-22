@@ -101,6 +101,7 @@ router.post("/", protect, async (req, res) => {
     const property = await Property.findById(propertyId);
     if (!property) return res.status(404).json({ message: "Property not found" });
 
+    // Create booking
     const booking = await Booking.create({
       tenant: req.user._id,
       landlord: property.landlord,
@@ -111,7 +112,18 @@ router.post("/", protect, async (req, res) => {
       status: "pending",
     });
 
-    res.status(201).json(booking);
+    // Populate necessary fields for emitting
+    const populatedBooking = await Booking.findById(booking._id)
+      .populate("tenant", "username")
+      .populate("property", "title landlord");
+
+    // Emit to landlord via Socket.IO
+    if (req.io && property.landlord) {
+      // Emit to the specific landlord room
+      req.io.to(property.landlord.toString()).emit("newBooking", populatedBooking);
+    }
+
+    res.status(201).json(populatedBooking);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });

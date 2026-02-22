@@ -86,7 +86,7 @@ router.get("/nearby", async (req, res) => {
     const lat = parseFloat(latitude);
     const lng = parseFloat(longitude);
 
-    const radius = 0.05;
+    const radius = 0.10;
 
     const properties = await Property.find({
       "coordinates.lat": {
